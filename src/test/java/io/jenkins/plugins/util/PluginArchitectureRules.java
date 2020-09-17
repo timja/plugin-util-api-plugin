@@ -1,6 +1,7 @@
 package io.jenkins.plugins.util;
 
 import com.tngtech.archunit.core.domain.JavaModifier;
+import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -71,6 +72,12 @@ public final class PluginArchitectureRules {
     public static final ArchRule DATA_BOUND_SETTER_MUST_BE_IN_PUBLIC_CLASS =
             methods().that().areAnnotatedWith(DataBoundSetter.class)
                     .should().beDeclaredInClassesThat().arePublic();
+
+    /** Ensures that the {@code readResolve} methods are protected so sub classes can call the parent method. */
+    @ArchTest
+    public static final ArchRule READ_RESOLVE_SHOULD_BE_PROTECTED =
+            methods().that().haveName("readResolve").and().haveRawReturnType(Object.class)
+                    .should().beProtected();
 
     private PluginArchitectureRules() {
         // prevents instantiation
